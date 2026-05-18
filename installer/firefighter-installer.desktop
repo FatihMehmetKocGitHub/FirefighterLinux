@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Install Firefighter Linux
+Name[tr]=Firefighter Linux Kur
+Comment=Launch Firefighter Linux Installer
+Comment[tr]=Firefighter Linux Kurulumunu Başlat
+Exec=sudo calamares
+Icon=calamares
+Terminal=false
+Categories=System;
+StartupNotify=true
