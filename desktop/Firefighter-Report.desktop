@@ -1,0 +1,17 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Firefighter Report
+Name[tr]=Firefighter Rapor Sistemi
+Comment=Firefighter Linux Incident Reporting GUI
+Comment[tr]=Firefighter Linux Olay Bildirim Sistemi
+
+Exec=python3 /home/nnhfy/FirefighterLinux/gui/firefighter-report-gui.py
+
+Icon=dialog-warning
+
+Terminal=false
+Categories=Utility;
+
+StartupNotify=true
+Path=/home/nnhfy/FirefighterLinux
