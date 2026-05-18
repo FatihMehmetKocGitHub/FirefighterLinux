@@ -1,0 +1,8 @@
+[Unit]
+Description=Firefighter Linux Auto Sync
+
+[Service]
+Type=oneshot
+User=nnhfy
+Environment=HOME=/home/nnhfy
+ExecStart=/usr/local/bin/ffl-auto-sync
