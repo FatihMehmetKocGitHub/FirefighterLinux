@@ -86,4 +86,4 @@ The goal is to provide a usable operating system for crisis situations such as:
 Current version:
 
 ```text
-V0.1 DEV
+V1.0 DEV

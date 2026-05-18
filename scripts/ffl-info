@@ -3,7 +3,7 @@
 echo "===================================="
 echo " Firefighter Linux"
 echo "===================================="
-echo "Version : V0.1 DEV"
+echo "Version : V1.0 DEV"
 echo "Base    : Xubuntu 24.04 LTS"
 echo "Mode    : Offline-first"
 echo "Purpose : Disaster response and field coordination"
