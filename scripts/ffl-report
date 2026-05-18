@@ -11,12 +11,15 @@ sqlite3 "$DB" "CREATE TABLE IF NOT EXISTS reports (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
 type TEXT,
 note TEXT,
+address TEXT,
 latitude TEXT,
 longitude TEXT,
 status TEXT,
 photo_path TEXT,
 created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );"
+
+sqlite3 "$DB" "ALTER TABLE reports ADD COLUMN address TEXT;" 2>/dev/null
 
 echo "===================================="
 echo " Firefighter Linux Incident Report"
@@ -30,6 +33,7 @@ if [ "$LANG" = "1" ]; then
     echo "Olay türleri: yangin, yaralanma, enkaz, sel, yol-kapali, sos, kayip, iletisim, deprem"
     read -p "Olay türü: " TYPE
     read -p "Not: " NOTE
+    read -p "Adres / Konum açıklaması: " ADDRESS
     read -p "Enlem: " LAT
     read -p "Boylam: " LON
     read -p "Durum (dusuk/orta/yuksek/kritik): " STATUS
@@ -39,6 +43,7 @@ else
     echo "Incident types: fire, injury, collapse, flood, roadblock, sos, missing, communication, earthquake"
     read -p "Type: " TYPE
     read -p "Note: " NOTE
+    read -p "Address / Location description: " ADDRESS
     read -p "Latitude: " LAT
     read -p "Longitude: " LON
     read -p "Status (low/medium/high/critical): " STATUS
@@ -46,6 +51,7 @@ else
 fi
 
 PHOTO_FINAL=""
+
 if [ -z "$TYPE" ] || [ -z "$NOTE" ]; then
     echo ""
 
@@ -57,6 +63,7 @@ if [ -z "$TYPE" ] || [ -z "$NOTE" ]; then
 
     exit 1
 fi
+
 if [ -n "$PHOTO" ] && [ -f "$PHOTO" ]; then
     BASENAME="$(basename "$PHOTO")"
     TARGET="$PHOTOS_DIR/$(date +%Y%m%d%H%M%S)-$BASENAME"
@@ -64,8 +71,8 @@ if [ -n "$PHOTO" ] && [ -f "$PHOTO" ]; then
     PHOTO_FINAL="$TARGET"
 fi
 
-sqlite3 "$DB" "INSERT INTO reports (type, note, latitude, longitude, status, photo_path)
-VALUES ('$TYPE', '$NOTE', '$LAT', '$LON', '$STATUS', '$PHOTO_FINAL');"
+sqlite3 "$DB" "INSERT INTO reports (type, note, address, latitude, longitude, status, photo_path)
+VALUES ('$TYPE', '$NOTE', '$ADDRESS', '$LAT', '$LON', '$STATUS', '$PHOTO_FINAL');"
 
 echo ""
 if [ "$LANG" = "1" ]; then
