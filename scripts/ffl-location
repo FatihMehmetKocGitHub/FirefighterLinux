@@ -1,0 +1,80 @@
+#!/bin/bash
+
+MAP_DIR="$HOME/FirefighterLinux/maps"
+MAP_FILE="$MAP_DIR/location-picker.html"
+
+mkdir -p "$MAP_DIR"
+
+cat > "$MAP_FILE" << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Firefighter Linux Location Picker</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<style>
+body { margin: 0; font-family: Arial, sans-serif; }
+#map { height: 80vh; width: 100%; }
+#panel { padding: 15px; font-size: 18px; }
+code { background: #eee; padding: 6px; display: inline-block; }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div id="panel">
+<h2>Firefighter Linux Location Picker</h2>
+<p>Haritaya tıkla / Click on the map</p>
+<p>Latitude / Enlem: <code id="lat">-</code></p>
+<p>Longitude / Boylam: <code id="lon">-</code></p>
+<p>Copy / Kopyala: <code id="copy">-</code></p>
+</div>
+
+<script>
+var map = L.map('map').setView([39.0, 35.0], 6);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19
+}).addTo(map);
+
+var marker = null;
+
+map.on('click', function(e) {
+    var lat = e.latlng.lat.toFixed(6);
+    var lon = e.latlng.lng.toFixed(6);
+
+    document.getElementById("lat").textContent = lat;
+    document.getElementById("lon").textContent = lon;
+    document.getElementById("copy").textContent = lat + ", " + lon;
+
+    if (marker) {
+        map.removeLayer(marker);
+    }
+
+    marker = L.marker([lat, lon]).addTo(map)
+        .bindPopup("Selected location<br>Lat: " + lat + "<br>Lon: " + lon)
+        .openPopup();
+});
+</script>
+
+</body>
+</html>
+EOF
+
+chmod 644 "$MAP_FILE"
+
+echo "Location picker created:"
+echo "$MAP_FILE"
+
+if command -v chromium-browser >/dev/null 2>&1; then
+    chromium-browser "$MAP_FILE"
+elif command -v firefox >/dev/null 2>&1; then
+    firefox "$MAP_FILE"
+elif command -v xdg-open >/dev/null 2>&1; then
+    xdg-open "$MAP_FILE"
+else
+    echo "Open manually:"
+    echo "$MAP_FILE"
+fi
