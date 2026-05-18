@@ -1,0 +1,22 @@
+#!/bin/bash
+
+DB="$HOME/.firefighterlinux/firefighter.db"
+EXPORT_DIR="$HOME/.firefighterlinux/exports"
+
+mkdir -p "$EXPORT_DIR"
+
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+EXPORT_FILE="$EXPORT_DIR/firefighter-export-$TIMESTAMP.json"
+
+if [ ! -f "$DB" ]; then
+    echo "No Firefighter Linux database found."
+    exit 1
+fi
+
+sqlite3 -json "$DB" "SELECT * FROM reports;" > "$EXPORT_FILE"
+
+echo "===================================="
+echo " Firefighter Linux Export System"
+echo "===================================="
+echo "Export created:"
+echo "$EXPORT_FILE"
