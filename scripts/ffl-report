@@ -46,7 +46,17 @@ else
 fi
 
 PHOTO_FINAL=""
+if [ -z "$TYPE" ] || [ -z "$NOTE" ]; then
+    echo ""
 
+    if [ "$LANG" = "1" ]; then
+        echo "Hata: Olay türü ve not boş bırakılamaz."
+    else
+        echo "Error: Type and note cannot be empty."
+    fi
+
+    exit 1
+fi
 if [ -n "$PHOTO" ] && [ -f "$PHOTO" ]; then
     BASENAME="$(basename "$PHOTO")"
     TARGET="$PHOTOS_DIR/$(date +%Y%m%d%H%M%S)-$BASENAME"
