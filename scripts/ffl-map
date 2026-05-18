@@ -1,0 +1,79 @@
+#!/bin/bash
+
+DB="$HOME/.firefighterlinux/firefighter.db"
+MAP_DIR="$HOME/FirefighterLinux/maps"
+MAP_FILE="$MAP_DIR/firefighter-map.html"
+
+mkdir -p "$MAP_DIR"
+
+if [ ! -f "$DB" ]; then
+    echo "No Firefighter Linux database found."
+    exit 1
+fi
+
+cat > "$MAP_FILE" << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Firefighter Linux Map</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<style>
+body { margin: 0; font-family: Arial, sans-serif; }
+#map { height: 75vh; width: 100%; }
+#list { padding: 15px; }
+.report { border-bottom: 1px solid #ccc; padding: 8px 0; }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+<div id="list">
+<h2>Firefighter Linux Reports</h2>
+EOF
+
+sqlite3 -separator "|" "$DB" "SELECT id,type,note,latitude,longitude,status,created_at FROM reports;" | while IFS="|" read -r ID TYPE NOTE LAT LON STATUS CREATED; do
+    echo "<div class='report'><b>#$ID - $TYPE</b><br>Note: $NOTE<br>Lat: $LAT | Lon: $LON<br>Status: $STATUS<br>Date: $CREATED</div>" >> "$MAP_FILE"
+done
+
+cat >> "$MAP_FILE" << 'EOF'
+</div>
+
+<script>
+var map = L.map('map').setView([39.0, 35.0], 6);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19
+}).addTo(map);
+
+EOF
+
+sqlite3 -separator "|" "$DB" "SELECT id,type,note,latitude,longitude,status,created_at FROM reports;" | while IFS="|" read -r ID TYPE NOTE LAT LON STATUS CREATED; do
+    if [[ "$LAT" =~ ^-?[0-9]+([.][0-9]+)?$ ]] && [[ "$LON" =~ ^-?[0-9]+([.][0-9]+)?$ ]]; then
+        echo "L.marker([$LAT, $LON]).addTo(map).bindPopup('<b>#$ID - $TYPE</b><br>$NOTE<br>Status: $STATUS<br>$CREATED');" >> "$MAP_FILE"
+    fi
+done
+
+cat >> "$MAP_FILE" << 'EOF'
+</script>
+
+</body>
+</html>
+EOF
+
+chmod 644 "$MAP_FILE"
+
+echo "Map created:"
+echo "$MAP_FILE"
+
+if command -v chromium-browser >/dev/null 2>&1; then
+    chromium-browser "$MAP_FILE"
+elif command -v firefox >/dev/null 2>&1; then
+    firefox "$MAP_FILE"
+elif command -v xdg-open >/dev/null 2>&1; then
+    xdg-open "$MAP_FILE"
+else
+    echo "Open this file manually:"
+    echo "$MAP_FILE"
+fi
