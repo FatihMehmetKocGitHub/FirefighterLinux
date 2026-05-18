@@ -1,0 +1,31 @@
+#!/bin/bash
+
+DB="$HOME/.firefighterlinux/firefighter.db"
+
+if [ ! -f "$DB" ]; then
+    echo "No Firefighter Linux database found."
+    exit 1
+fi
+
+if [ -z "$1" ]; then
+    echo "Usage: ffl-view REPORT_ID"
+    echo "Example: ffl-view 1"
+    exit 1
+fi
+
+ID="$1"
+
+echo "===================================="
+echo " Firefighter Linux Report Detail"
+echo "===================================="
+
+sqlite3 "$DB" "SELECT
+'ID: ' || id,
+'Type: ' || type,
+'Note: ' || note,
+'Latitude: ' || latitude,
+'Longitude: ' || longitude,
+'Status: ' || status,
+'Photo: ' || photo_path,
+'Created At: ' || created_at
+FROM reports WHERE id=$ID;"
