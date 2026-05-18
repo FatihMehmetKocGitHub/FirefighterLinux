@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo "===================================="
+echo " Firefighter Linux Mesh Send"
+echo "===================================="
+
+if ! command -v meshtastic >/dev/null 2>&1; then
+    echo "Meshtastic CLI bulunamadı."
+    exit 1
+fi
+
+read -p "Mesaj / Message: " MSG
+
+if [ -z "$MSG" ]; then
+    echo "Mesaj boş olamaz."
+    exit 1
+fi
+
+meshtastic --sendtext "$MSG"

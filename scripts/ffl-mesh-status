@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo "===================================="
+echo " Firefighter Linux Mesh Status"
+echo "===================================="
+
+if ! command -v meshtastic >/dev/null 2>&1; then
+    echo "Meshtastic CLI bulunamadı."
+    echo "Kurulum:"
+    echo "sudo apt install python3-pip -y"
+    echo 'pip3 install --upgrade "meshtastic[cli]"'
+    exit 1
+fi
+
+echo "USB cihazlar:"
+lsusb | grep -Ei "CP210|CH910|CH340|UART|Silicon|QinHeng" || echo "LoRa/Meshtastic USB cihazı görünmüyor."
+
+echo ""
+echo "Meshtastic info:"
+meshtastic --info

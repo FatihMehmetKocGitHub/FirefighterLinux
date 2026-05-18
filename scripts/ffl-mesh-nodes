@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo "===================================="
+echo " Firefighter Linux Mesh Nodes"
+echo "===================================="
+
+if ! command -v meshtastic >/dev/null 2>&1; then
+    echo "Meshtastic CLI bulunamadı."
+    exit 1
+fi
+
+meshtastic --nodes

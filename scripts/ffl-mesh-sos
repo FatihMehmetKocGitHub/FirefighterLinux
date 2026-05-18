@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo "===================================="
+echo " Firefighter Linux Mesh SOS"
+echo "===================================="
+
+if ! command -v meshtastic >/dev/null 2>&1; then
+    echo "Meshtastic CLI bulunamadı."
+    exit 1
+fi
+
+read -p "Konum / Location: " LOC
+read -p "Not / Note: " NOTE
+
+MSG="SOS | $LOC | $NOTE"
+
+meshtastic --sendtext "$MSG"
+echo "SOS gönderildi: $MSG"
