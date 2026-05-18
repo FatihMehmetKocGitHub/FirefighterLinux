@@ -1,0 +1,20 @@
+Merhaba, ben Fatih Mehmet Koç
+
+Ben bir itfaiyeci ve bilgisayar programcısıyım.
+
+Firefighter Linux; afet, kriz koordinasyonu, offline haberleşme ve saha kullanımı için geliştirdiğim bağımsız bir Linux projesidir.
+
+Bu proje herhangi bir resmi kurum veya kuruluşu temsil etmez.
+
+Öne çıkan amaçlar:
+• İnternetin olmadığı yerlerde haberleşmeye destek olmak
+• LoRa / mesh / offline sistemlerle saha koordinasyonunu güçlendirmek
+• Afet anında bilgi akışını hızlandırmak
+• Gönüllü ekipler ve kriz masaları için açık kaynak bir temel oluşturmak
+
+Geri bildirim vermekten çekinmeyin.
+Bu proje, her öneri ve katkıyla daha ileriye taşınacaktır.
+
+“Felaket başa gelmeden evvel,
+koruyucu ve önleyici tedbirleri düşünmek lazımdır.”
+- Mustafa Kemal Atatürk
