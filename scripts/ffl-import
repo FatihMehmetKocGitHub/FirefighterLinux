@@ -29,6 +29,9 @@ echo "===================================="
 echo " Firefighter Linux Import System"
 echo "===================================="
 
+IMPORTED=0
+SKIPPED=0
+
 jq -c '.[]' "$IMPORT_FILE" | while read -r row; do
 
 TYPE=$(echo "$row" | jq -r '.type')
@@ -37,13 +40,28 @@ LAT=$(echo "$row" | jq -r '.latitude')
 LON=$(echo "$row" | jq -r '.longitude')
 STATUS=$(echo "$row" | jq -r '.status')
 PHOTO=$(echo "$row" | jq -r '.photo_path')
+CREATED=$(echo "$row" | jq -r '.created_at')
 
+EXISTS=$(sqlite3 "$DB" "
+SELECT COUNT(*) FROM reports
+WHERE type='$TYPE'
+AND note='$NOTE'
+AND latitude='$LAT'
+AND longitude='$LON'
+AND created_at='$CREATED';
+")
+
+if [ "$EXISTS" -eq 0 ]; then
 sqlite3 "$DB" "
 INSERT INTO reports
-(type, note, latitude, longitude, status, photo_path)
+(type, note, latitude, longitude, status, photo_path, created_at)
 VALUES
-('$TYPE', '$NOTE', '$LAT', '$LON', '$STATUS', '$PHOTO');
+('$TYPE', '$NOTE', '$LAT', '$LON', '$STATUS', '$PHOTO', '$CREATED');
 "
+echo "Imported: $TYPE - $NOTE"
+else
+echo "Duplicate skipped: $TYPE - $NOTE"
+fi
 
 done
 
