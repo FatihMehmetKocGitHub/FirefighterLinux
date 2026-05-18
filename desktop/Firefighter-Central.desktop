@@ -1,0 +1,17 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Firefighter Central Dashboard
+Name[tr]=Firefighter Merkez Paneli
+
+Comment=Firefighter Linux Central Incident Dashboard
+Comment[tr]=Merkezi olay ve deprem yönetim paneli
+
+Exec=firefox http://10.15.162.158:5050/dashboard
+
+Icon=network-workgroup
+
+Terminal=false
+Categories=Network;Utility;
+
+StartupNotify=true
