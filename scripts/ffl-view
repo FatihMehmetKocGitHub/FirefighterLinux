@@ -28,6 +28,7 @@ SELECT
 id,
 type,
 note,
+address,
 latitude,
 longitude,
 status,
