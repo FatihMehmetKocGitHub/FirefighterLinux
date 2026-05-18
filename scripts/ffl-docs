@@ -1,0 +1,11 @@
+#!/bin/bash
+
+DOCS_DIR="$HOME/FirefighterLinux/docs"
+
+echo "Opening Firefighter Linux offline docs..."
+
+if command -v xdg-open >/dev/null 2>&1; then
+    xdg-open "$DOCS_DIR"
+else
+    echo "Docs directory: $DOCS_DIR"
+fi
