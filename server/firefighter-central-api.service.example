@@ -1,0 +1,13 @@
+[Unit]
+Description=Firefighter Central API
+After=network.target postgresql.service
+
+[Service]
+User=nnhfy
+WorkingDirectory=/home/nnhfy/firefighter-server
+ExecStart=/usr/bin/python3 /home/nnhfy/firefighter-server/firefighter-central-api.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
