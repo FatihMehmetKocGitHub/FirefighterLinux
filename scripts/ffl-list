@@ -1,0 +1,14 @@
+#!/bin/bash
+
+DB="$HOME/.firefighterlinux/firefighter.db"
+
+if [ ! -f "$DB" ]; then
+    echo "No local Firefighter Linux database found."
+    exit 1
+fi
+
+echo "===================================="
+echo " Firefighter Linux Local Reports"
+echo "===================================="
+
+sqlite3 "$DB" "SELECT id, type, note, latitude, longitude, status, created_at FROM reports;"
