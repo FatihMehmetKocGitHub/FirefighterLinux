@@ -11,4 +11,4 @@ echo "===================================="
 echo " Firefighter Linux Local Reports"
 echo "===================================="
 
-sqlite3 "$DB" "SELECT id, type, note, latitude, longitude, status, created_at FROM reports;"
+sqlite3 "$DB" "SELECT id, type, note, address, latitude, longitude, status, created_at FROM reports;"
