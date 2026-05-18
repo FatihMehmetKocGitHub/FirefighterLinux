@@ -1,0 +1,3 @@
+cd ~/FirefighterLinux
+mkdir -p config
+nano config/firefighter-config.json.example

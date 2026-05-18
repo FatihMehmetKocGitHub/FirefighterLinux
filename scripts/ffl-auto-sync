@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+
+import sqlite3
+import requests
+import os
+import json
+import socket
+
+DB_PATH = os.path.expanduser("~/.firefighterlinux/firefighter.db")
+CONFIG_PATH = os.path.expanduser("~/.firefighterlinux/config.json")
+DEFAULT_API_URL = "http://192.168.1.104:5050/api/report"
+
+def load_config():
+    if not os.path.exists(CONFIG_PATH):
+        os.makedirs(os.path.dirname(CONFIG_PATH), exist_ok=True)
+        default_config = {
+            "api_url": DEFAULT_API_URL,
+            "device_name": socket.gethostname()
+        }
+        with open(CONFIG_PATH, "w") as f:
+            json.dump(default_config, f, indent=4)
+
+    with open(CONFIG_PATH, "r") as f:
+        return json.load(f)
+
+config = load_config()
+
+API_URL = config.get("api_url", DEFAULT_API_URL)
+DEVICE_NAME = config.get("device_name", socket.gethostname())
+
+if not os.path.exists(DB_PATH):
+    print("Firefighter DB bulunamadı:", DB_PATH)
+    exit(1)
+
+conn = sqlite3.connect(DB_PATH)
+conn.row_factory = sqlite3.Row
+cur = conn.cursor()
+
+try:
+    cur.execute("ALTER TABLE reports ADD COLUMN synced INTEGER DEFAULT 0")
+    conn.commit()
+except:
+    pass
+
+rows = cur.execute("""
+    SELECT * FROM reports
+    WHERE synced = 0
+""").fetchall()
+
+print(f"{len(rows)} kayıt bulundu")
+
+for row in rows:
+    data = {
+        "source_device": DEVICE_NAME,
+        "local_id": row["id"],
+        "type": row["type"],
+        "note": row["note"],
+        "address": row["address"],
+        "latitude": row["latitude"],
+        "longitude": row["longitude"],
+        "status": row["status"],
+        "created_at": row["created_at"]
+    }
+
+    files = {}
+    photo_file = None
+
+    try:
+        photo_path = row["photo_path"]
+
+        if photo_path and os.path.exists(photo_path):
+            photo_file = open(photo_path, "rb")
+            files["photo"] = photo_file
+
+        r = requests.post(API_URL, data=data, files=files, timeout=10)
+
+        if r.status_code == 200:
+            print(f"Gönderildi: {row['id']}")
+            cur.execute("UPDATE reports SET synced = 1 WHERE id = ?", (row["id"],))
+            conn.commit()
+        else:
+            print("HATA:", r.status_code, r.text)
+
+    except Exception as e:
+        print("Bağlantı hatası:", e)
+
+    finally:
+        if photo_file:
+            photo_file.close()
+
+conn.close()
