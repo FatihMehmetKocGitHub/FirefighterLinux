@@ -1,0 +1,43 @@
+#!/bin/bash
+
+DB="$HOME/.firefighterlinux/firefighter.db"
+
+if [ ! -f "$DB" ]; then
+    echo "No Firefighter Linux database found."
+    exit 1
+fi
+
+if [ -z "$1" ]; then
+    echo "Usage: ffl-photo REPORT_ID"
+    echo "Example: ffl-photo 1"
+    exit 1
+fi
+
+ID="$1"
+
+PHOTO=$(sqlite3 "$DB" "
+SELECT photo_path
+FROM reports
+WHERE id=$ID;
+")
+
+if [ -z "$PHOTO" ]; then
+    echo "No photo attached to this report."
+    exit 1
+fi
+
+if [ ! -f "$PHOTO" ]; then
+    echo "Photo file not found:"
+    echo "$PHOTO"
+    exit 1
+fi
+
+echo "Opening photo:"
+echo "$PHOTO"
+
+if command -v xdg-open >/dev/null 2>&1; then
+    xdg-open "$PHOTO"
+else
+    echo "Open manually:"
+    echo "$PHOTO"
+fi
