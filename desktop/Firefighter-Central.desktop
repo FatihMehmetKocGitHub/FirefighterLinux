@@ -9,7 +9,7 @@ Comment[tr]=Merkezi olay ve deprem yönetim paneli
 
 Exec=firefox http://10.15.162.158:5050/dashboard
 
-Icon=network-workgroup
+Icon=/home/nnhfy/FirefighterLinux/branding/logo.png
 
 Terminal=false
 Categories=Network;Utility;
