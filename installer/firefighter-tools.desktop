@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Firefighter Linux Tools
+Name[tr]=Firefighter Linux Araçları
+Comment=Open Firefighter Linux report system
+Comment[tr]=Firefighter Linux rapor sistemini aç
+Exec=ffl-gui
+Icon=/home/nnhfy/FirefighterLinux/branding/icons/firefighterlinux-installer.png
+Terminal=false
+Categories=Utility;
+StartupNotify=true
