@@ -1,0 +1,15 @@
+PRETTY_NAME="Firefighter Linux V1"
+NAME="Firefighter Linux"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=firefighterlinux
+ID_LIKE=debian
+
+HOME_URL="https://firefighterlinux.org"
+SUPPORT_URL="https://firefighterlinux.org/support"
+BUG_REPORT_URL="https://firefighterlinux.org/issues"
+
+ANSI_COLOR="1;31"
+
+LOGO=firefighterlinux-logo
