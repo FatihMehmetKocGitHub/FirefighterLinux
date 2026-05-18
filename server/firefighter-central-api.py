@@ -41,14 +41,14 @@ def add_report():
         (source_device, local_id, type, note, address, latitude, longitude, status, photo_path, created_at)
         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
     """, (
-        data.get("source_device", "unknown"),
+        data.get("source_device", "central-dashboard"),
         data.get("local_id"),
-        data.get("type"),
-        data.get("note"),
-        data.get("address"),
+        data.get("type", "deprem"),
+        data.get("note", ""),
+        data.get("address", ""),
         data.get("latitude"),
         data.get("longitude"),
-        data.get("status"),
+        data.get("status", "critical"),
         photo_path,
         data.get("created_at", datetime.now().isoformat())
     ))
@@ -63,14 +63,12 @@ def add_report():
 def list_reports():
     conn = db()
     cur = conn.cursor()
-
     cur.execute("""
         SELECT id, source_device, type, note, address, latitude, longitude, status, photo_path, created_at, imported_at
         FROM reports
         ORDER BY id DESC
         LIMIT 500
     """)
-
     rows = cur.fetchall()
     cur.close()
     conn.close()
@@ -87,7 +85,7 @@ def list_reports():
             "longitude": r[6],
             "status": r[7],
             "photo_path": r[8],
-            "created_at": r[9],
+            "created_at": str(r[9]),
             "imported_at": str(r[10]),
         })
 
@@ -97,14 +95,12 @@ def list_reports():
 def dashboard():
     conn = db()
     cur = conn.cursor()
-
     cur.execute("""
         SELECT id, source_device, type, note, address, latitude, longitude, status, photo_path, created_at, imported_at
         FROM reports
         ORDER BY id DESC
         LIMIT 500
     """)
-
     rows = cur.fetchall()
     cur.close()
     conn.close()
@@ -121,7 +117,7 @@ def dashboard():
             "longitude": r[6],
             "status": r[7],
             "photo_path": r[8],
-            "created_at": r[9],
+            "created_at": str(r[9]),
             "imported_at": str(r[10]),
         })
 
@@ -144,7 +140,10 @@ header p{margin:4px 0 0;color:#fecaca}
 .stats{display:flex;gap:12px;padding:16px;flex-wrap:wrap}
 .card{background:#1f2937;border:1px solid #374151;border-radius:10px;padding:14px;min-width:160px}
 .card strong{display:block;font-size:28px;color:#f87171}
-#map{height:460px;margin:0 16px 16px;border-radius:10px;border:1px solid #374151}
+#map{height:520px;margin:0 16px 16px;border-radius:10px;border:1px solid #374151}
+.panel{margin:16px;padding:14px;background:#1f2937;border:1px solid #374151;border-radius:10px}
+input,select,button{padding:9px;margin:4px;border-radius:6px;border:1px solid #374151}
+button{background:#dc2626;color:white;cursor:pointer}
 table{width:calc(100% - 32px);margin:16px;border-collapse:collapse;background:#1f2937;border-radius:10px;overflow:hidden}
 th,td{padding:10px;border-bottom:1px solid #374151;text-align:left;font-size:14px}
 th{background:#991b1b}
@@ -155,13 +154,28 @@ th{background:#991b1b}
 <body>
 <header>
 <h1>Firefighter Central Dashboard</h1>
-<p>Afet / kriz merkezi olay takip ekranı</p>
+<p>Haritaya tıkla, deprem/olay konumunu direkt veritabanına kaydet.</p>
 </header>
 
 <div class="stats">
 <div class="card"><span>Toplam Olay</span><strong>{{ reports|length }}</strong></div>
 <div class="card"><span>Kritik</span><strong>{{ critical_count }}</strong></div>
 <div class="card"><span>Cihaz</span><strong>{{ device_count }}</strong></div>
+</div>
+
+<div class="panel">
+<b>Yeni Deprem / Olay İşaretle</b><br>
+<input id="type" value="deprem" placeholder="Olay türü">
+<input id="note" placeholder="Not">
+<input id="address" placeholder="Adres">
+<select id="status">
+<option value="critical">critical</option>
+<option value="open">open</option>
+<option value="closed">closed</option>
+</select>
+<span>Lat: <b id="latText">-</b></span>
+<span>Lon: <b id="lonText">-</b></span>
+<button onclick="saveClickedLocation()">Kaydet</button>
 </div>
 
 <div id="map"></div>
@@ -190,6 +204,10 @@ th{background:#991b1b}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const reports = {{ reports_json|safe }};
+let selectedLat = null;
+let selectedLon = null;
+let selectedMarker = null;
+
 const map = L.map('map').setView([39.0, 35.0], 6);
 
 L.tileLayer('https://tile.openstreetmap.de/{z}/{x}/{y}.png', {
@@ -210,6 +228,56 @@ reports.forEach(r => {
         `);
     }
 });
+
+map.on('click', function(e) {
+    selectedLat = e.latlng.lat.toFixed(6);
+    selectedLon = e.latlng.lng.toFixed(6);
+
+    document.getElementById("latText").innerText = selectedLat;
+    document.getElementById("lonText").innerText = selectedLon;
+
+    if (selectedMarker) {
+        map.removeLayer(selectedMarker);
+    }
+
+    selectedMarker = L.marker([selectedLat, selectedLon]).addTo(map)
+        .bindPopup("Seçilen konum<br>Lat: " + selectedLat + "<br>Lon: " + selectedLon)
+        .openPopup();
+});
+
+function saveClickedLocation() {
+    if (!selectedLat || !selectedLon) {
+        alert("Önce haritadan konum seç.");
+        return;
+    }
+
+    const form = new FormData();
+    form.append("source_device", "central-dashboard");
+    form.append("local_id", "0");
+    form.append("type", document.getElementById("type").value || "deprem");
+    form.append("note", document.getElementById("note").value || "-");
+    form.append("address", document.getElementById("address").value || "-");
+    form.append("latitude", selectedLat);
+    form.append("longitude", selectedLon);
+    form.append("status", document.getElementById("status").value || "critical");
+
+    fetch("/api/report", {
+        method: "POST",
+        body: form
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            alert("Kayıt veritabanına aktarıldı.");
+            window.location.reload();
+        } else {
+            alert("Kayıt başarısız.");
+        }
+    })
+    .catch(err => {
+        alert("Hata: " + err);
+    });
+}
 </script>
 </body>
 </html>
