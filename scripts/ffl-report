@@ -21,13 +21,29 @@ created_at TEXT DEFAULT CURRENT_TIMESTAMP
 echo "===================================="
 echo " Firefighter Linux Incident Report"
 echo "===================================="
+echo "1) Türkçe"
+echo "2) English"
+read -p "Dil / Language seçin [1/2]: " LANG
 
-read -p "Type (fire/injury/collapse/flood/roadblock/sos/missing/communication): " TYPE
-read -p "Note: " NOTE
-read -p "Latitude: " LAT
-read -p "Longitude: " LON
-read -p "Status (low/medium/high/critical): " STATUS
-read -p "Photo path (optional, press Enter to skip): " PHOTO
+if [ "$LANG" = "1" ]; then
+    echo ""
+    echo "Olay türleri: yangin, yaralanma, enkaz, sel, yol-kapali, sos, kayip, iletisim, deprem"
+    read -p "Olay türü: " TYPE
+    read -p "Not: " NOTE
+    read -p "Enlem: " LAT
+    read -p "Boylam: " LON
+    read -p "Durum (dusuk/orta/yuksek/kritik): " STATUS
+    read -p "Fotoğraf yolu (opsiyonel, boş geçebilirsiniz): " PHOTO
+else
+    echo ""
+    echo "Incident types: fire, injury, collapse, flood, roadblock, sos, missing, communication, earthquake"
+    read -p "Type: " TYPE
+    read -p "Note: " NOTE
+    read -p "Latitude: " LAT
+    read -p "Longitude: " LON
+    read -p "Status (low/medium/high/critical): " STATUS
+    read -p "Photo path (optional, press Enter to skip): " PHOTO
+fi
 
 PHOTO_FINAL=""
 
@@ -42,5 +58,10 @@ sqlite3 "$DB" "INSERT INTO reports (type, note, latitude, longitude, status, pho
 VALUES ('$TYPE', '$NOTE', '$LAT', '$LON', '$STATUS', '$PHOTO_FINAL');"
 
 echo ""
-echo "Report saved locally."
-echo "Database: $DB"
+if [ "$LANG" = "1" ]; then
+    echo "Kayıt local olarak kaydedildi."
+    echo "Veritabanı: $DB"
+else
+    echo "Report saved locally."
+    echo "Database: $DB"
+fi
