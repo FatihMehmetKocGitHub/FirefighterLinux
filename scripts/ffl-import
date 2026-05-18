@@ -1,0 +1,50 @@
+#!/bin/bash
+
+DB="$HOME/.firefighterlinux/firefighter.db"
+
+if [ -z "$1" ]; then
+    echo "Usage: ffl-import FILE.json"
+    exit 1
+fi
+
+IMPORT_FILE="$1"
+
+if [ ! -f "$IMPORT_FILE" ]; then
+    echo "File not found."
+    exit 1
+fi
+
+sqlite3 "$DB" "CREATE TABLE IF NOT EXISTS reports (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+type TEXT,
+note TEXT,
+latitude TEXT,
+longitude TEXT,
+status TEXT,
+photo_path TEXT,
+created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);"
+
+echo "===================================="
+echo " Firefighter Linux Import System"
+echo "===================================="
+
+jq -c '.[]' "$IMPORT_FILE" | while read -r row; do
+
+TYPE=$(echo "$row" | jq -r '.type')
+NOTE=$(echo "$row" | jq -r '.note')
+LAT=$(echo "$row" | jq -r '.latitude')
+LON=$(echo "$row" | jq -r '.longitude')
+STATUS=$(echo "$row" | jq -r '.status')
+PHOTO=$(echo "$row" | jq -r '.photo_path')
+
+sqlite3 "$DB" "
+INSERT INTO reports
+(type, note, latitude, longitude, status, photo_path)
+VALUES
+('$TYPE', '$NOTE', '$LAT', '$LON', '$STATUS', '$PHOTO');
+"
+
+done
+
+echo "Import completed."
