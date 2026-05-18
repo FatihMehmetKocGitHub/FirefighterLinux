@@ -29,7 +29,7 @@ code { background: #eee; padding: 6px; display: inline-block; }
 <p>Haritaya tıkla / Click on the map</p>
 <p>Latitude / Enlem: <code id="lat">-</code></p>
 <p>Longitude / Boylam: <code id="lon">-</code></p>
-<p>Copy / Kopyala: <code id="copy">-</code></p>
+<p>Kopyala / Copy: <code id="copy">-</code></p>
 </div>
 
 <script>
@@ -54,7 +54,7 @@ map.on('click', function(e) {
     }
 
     marker = L.marker([lat, lon]).addTo(map)
-        .bindPopup("Selected location<br>Lat: " + lat + "<br>Lon: " + lon)
+        .bindPopup("Seçilen konum / Selected location<br>Lat: " + lat + "<br>Lon: " + lon)
         .openPopup();
 });
 </script>
