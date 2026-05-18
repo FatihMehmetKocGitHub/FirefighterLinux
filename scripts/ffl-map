@@ -33,8 +33,8 @@ body { margin: 0; font-family: Arial, sans-serif; }
 <h2>Firefighter Linux Reports</h2>
 EOF
 
-sqlite3 -separator "|" "$DB" "SELECT id,type,note,latitude,longitude,status,created_at FROM reports;" | while IFS="|" read -r ID TYPE NOTE LAT LON STATUS CREATED; do
-    echo "<div class='report'><b>#$ID - $TYPE</b><br>Note: $NOTE<br>Lat: $LAT | Lon: $LON<br>Status: $STATUS<br>Date: $CREATED</div>" >> "$MAP_FILE"
+sqlite3 -separator "|" "$DB" "SELECT id,type,note,address,latitude,longitude,status,created_at FROM reports;" | while IFS="|" read -r ID TYPE NOTE ADDRESS LAT LON STATUS CREATED; do
+    echo "<div class='report'><b>#$ID - $TYPE</b><br>Address: $ADDRESS<br>Note: $NOTE<br>Lat: $LAT | Lon: $LON<br>Status: $STATUS<br>Date: $CREATED</div>" >> "$MAP_FILE"
 done
 
 cat >> "$MAP_FILE" << 'EOF'
@@ -49,9 +49,9 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 EOF
 
-sqlite3 -separator "|" "$DB" "SELECT id,type,note,latitude,longitude,status,created_at FROM reports;" | while IFS="|" read -r ID TYPE NOTE LAT LON STATUS CREATED; do
+sqlite3 -separator "|" "$DB" "SELECT id,type,note,address,latitude,longitude,status,created_at FROM reports;" | while IFS="|" read -r ID TYPE NOTE ADDRESS LAT LON STATUS CREATED; do
     if [[ "$LAT" =~ ^-?[0-9]+([.][0-9]+)?$ ]] && [[ "$LON" =~ ^-?[0-9]+([.][0-9]+)?$ ]]; then
-        echo "L.marker([$LAT, $LON]).addTo(map).bindPopup('<b>#$ID - $TYPE</b><br>$NOTE<br>Status: $STATUS<br>$CREATED');" >> "$MAP_FILE"
+        echo "L.marker([$LAT, $LON]).addTo(map).bindPopup('<b>#$ID - $TYPE</b><br>Address: $ADDRESS<br>Note: $NOTE<br>Status: $STATUS<br>$CREATED');" >> "$MAP_FILE"
     fi
 done
 
