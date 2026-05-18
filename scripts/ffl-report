@@ -1,0 +1,46 @@
+#!/bin/bash
+
+FFL_DIR="$HOME/.firefighterlinux"
+DB="$FFL_DIR/firefighter.db"
+PHOTOS_DIR="$FFL_DIR/photos"
+
+mkdir -p "$FFL_DIR"
+mkdir -p "$PHOTOS_DIR"
+
+sqlite3 "$DB" "CREATE TABLE IF NOT EXISTS reports (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+type TEXT,
+note TEXT,
+latitude TEXT,
+longitude TEXT,
+status TEXT,
+photo_path TEXT,
+created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);"
+
+echo "===================================="
+echo " Firefighter Linux Incident Report"
+echo "===================================="
+
+read -p "Type (fire/injury/collapse/flood/roadblock/sos/missing/communication): " TYPE
+read -p "Note: " NOTE
+read -p "Latitude: " LAT
+read -p "Longitude: " LON
+read -p "Status (low/medium/high/critical): " STATUS
+read -p "Photo path (optional, press Enter to skip): " PHOTO
+
+PHOTO_FINAL=""
+
+if [ -n "$PHOTO" ] && [ -f "$PHOTO" ]; then
+    BASENAME="$(basename "$PHOTO")"
+    TARGET="$PHOTOS_DIR/$(date +%Y%m%d%H%M%S)-$BASENAME"
+    cp "$PHOTO" "$TARGET"
+    PHOTO_FINAL="$TARGET"
+fi
+
+sqlite3 "$DB" "INSERT INTO reports (type, note, latitude, longitude, status, photo_path)
+VALUES ('$TYPE', '$NOTE', '$LAT', '$LON', '$STATUS', '$PHOTO_FINAL');"
+
+echo ""
+echo "Report saved locally."
+echo "Database: $DB"
