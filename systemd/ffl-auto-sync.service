@@ -1,0 +1,6 @@
+[Unit]
+Description=Firefighter Linux Auto Sync
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ffl-auto-sync
