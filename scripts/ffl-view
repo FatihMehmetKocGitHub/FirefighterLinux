@@ -19,13 +19,20 @@ echo "===================================="
 echo " Firefighter Linux Report Detail"
 echo "===================================="
 
-sqlite3 "$DB" "SELECT
-'ID: ' || id,
-'Type: ' || type,
-'Note: ' || note,
-'Latitude: ' || latitude,
-'Longitude: ' || longitude,
-'Status: ' || status,
-'Photo: ' || photo_path,
-'Created At: ' || created_at
-FROM reports WHERE id=$ID;"
+echo "===================================="
+echo " Firefighter Linux Report Detail"
+echo "===================================="
+
+sqlite3 -line "$DB" "
+SELECT
+id,
+type,
+note,
+latitude,
+longitude,
+status,
+photo_path,
+created_at
+FROM reports
+WHERE id=$ID;
+"
