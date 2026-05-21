@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Install Firefighter Linux
+Comment=Install Firefighter Linux using Calamares
+Exec=pkexec calamares
+Icon=/home/nnhfy/Desktop/logo.png
+Terminal=false
+Categories=System;
