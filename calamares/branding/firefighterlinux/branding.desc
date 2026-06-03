@@ -1,0 +1,27 @@
+---
+componentName: firefighterlinux
+
+strings:
+    productName:         "Firefighter Linux"
+    shortProductName:    "Firefighter Linux"
+    version:             "V1.0"
+    shortVersion:        "V1.0"
+    versionedName:       "Firefighter Linux V1.0"
+    shortVersionedName:  "Firefighter Linux V1.0"
+    bootloaderEntryName: "Firefighter Linux"
+    productUrl:          "https://firefighterlinux.org"
+    supportUrl:          "https://github.com/FatihMehmetKocGitHub/FirefighterLinux"
+    knownIssuesUrl:      "https://github.com/FatihMehmetKocGitHub/FirefighterLinux/issues"
+    releaseNotesUrl:     "https://github.com/FatihMehmetKocGitHub/FirefighterLinux"
+
+images:
+    productLogo:         "/usr/share/firefighterlinux/logo.png"
+    productIcon:         "/usr/share/firefighterlinux/logo.png"
+    productWelcome:      "/usr/share/backgrounds/firefighterlinux/wallpaper.png"
+
+slideshow:               "show.qml"
+
+style:
+   sidebarBackground:    "#111111"
+   sidebarText:          "#ffffff"
+   sidebarTextSelect:    "#ff4444"
