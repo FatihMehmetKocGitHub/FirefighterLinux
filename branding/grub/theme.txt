@@ -1,0 +1,27 @@
+desktop-image: "background.png"
+desktop-color: "#000000"
+title-text: ""
+terminal-font: "unicode"
+
++ boot_menu {
+    left = 5%
+    top = 37%
+    width = 58%
+    height = 35%
+    item_font = "unicode"
+    item_color = "#ffffff"
+    selected_item_color = "#ff2222"
+    item_height = 36
+    item_padding = 8
+    item_spacing = 6
+}
+
++ label {
+    top = 88%
+    left = 5%
+    width = 70%
+    height = 8%
+    text = "Use ↑ and ↓ to select. Press Enter to boot."
+    color = "#ffffff"
+    font = "unicode"
+}
