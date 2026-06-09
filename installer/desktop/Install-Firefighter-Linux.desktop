@@ -1,9 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Type=Application
-Name=Install Firefighter Linux
-Comment=Install Firefighter Linux to disk
-Exec=pkexec calamares
-Icon=system-software-install
-Terminal=false
-Categories=System;
